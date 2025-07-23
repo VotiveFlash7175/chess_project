@@ -24,9 +24,12 @@ class chesspiece:
 #functions
 def prov_kl_m(piece1,x,y):
     for piece in list:
-        if piece.col0==x and piece.row0==y and piece.color==piece1.color:
-            return False
-    return True
+        if piece.col0==x and piece.row0==y:
+            if piece.color==piece1.color:
+                return False, ""
+            else:
+                return True, "color"
+    return True, ""
 
 def prov_kl(x,y):
     for piece in list:
@@ -60,27 +63,255 @@ def spawnall(list,dictImages,vyd):
         first = False
     for piece in list:
         piece.spawn_figure(dictImages)
-           
+
 def vyd_kl(col1,row1,figure):
     vyd.append([col1,row1])
-    if col1-1>=0 and row1+2<=7 and prov_kl_m(figure,col1-1,row1+2):
-        vyd.append([col1-1,row1+2])
-    if col1+1<=7 and row1+2<=7 and prov_kl_m(figure,col1+1,row1+2):
-        vyd.append([col1+1,row1+2])
-    if col1-1>=0 and row1-2>=0 and prov_kl_m(figure,col1-1,row1-2):
-        vyd.append([col1-1,row1-2])
-    if col1+1<=7 and row1-2>=0 and prov_kl_m(figure,col1+1,row1-2):
-        vyd.append([col1+1,row1-2])
-    if row1-1>=0 and col1+2<=7 and prov_kl_m(figure,col1+2,row1-1):
-        vyd.append([col1+2,row1-1])
-    if row1+1<=7 and col1+2<=7 and prov_kl_m(figure,col1+2,row1+1):
-        vyd.append([col1+2,row1+1])
-    if row1-1>=0 and col1-2>=0 and prov_kl_m(figure,col1-2,row1-1):
-        vyd.append([col1-2,row1-1])
-    if row1+1<=7 and col1-2>=0 and prov_kl_m(figure,col1-2,row1+1):
-        vyd.append([col1-2,row1+1])
-        
-
+    if figure.name == 'knight':
+        if col1-1>=0 and row1+2<=7 and prov_kl_m(figure,col1-1,row1+2)[0]:
+            vyd.append([col1-1,row1+2])
+        if col1+1<=7 and row1+2<=7 and prov_kl_m(figure,col1+1,row1+2)[0]:
+            vyd.append([col1+1,row1+2])
+        if col1-1>=0 and row1-2>=0 and prov_kl_m(figure,col1-1,row1-2)[0]:
+            vyd.append([col1-1,row1-2])
+        if col1+1<=7 and row1-2>=0 and prov_kl_m(figure,col1+1,row1-2)[0]:
+            vyd.append([col1+1,row1-2])
+        if row1-1>=0 and col1+2<=7 and prov_kl_m(figure,col1+2,row1-1)[0]:
+            vyd.append([col1+2,row1-1])
+        if row1+1<=7 and col1+2<=7 and prov_kl_m(figure,col1+2,row1+1)[0]:
+            vyd.append([col1+2,row1+1])
+        if row1-1>=0 and col1-2>=0 and prov_kl_m(figure,col1-2,row1-1)[0]:
+            vyd.append([col1-2,row1-1])
+        if row1+1<=7 and col1-2>=0 and prov_kl_m(figure,col1-2,row1+1)[0]:
+            vyd.append([col1-2,row1+1])
+    if figure.name == 'rook':
+        a = col1
+        b = row1
+        col1+=1
+        while col1<8:
+            if prov_kl_m(figure,col1,row1)[0]:
+                vyd.append([col1, row1])
+                if prov_kl_m(figure,col1,row1)[1]=='color':
+                    break
+            else:
+                break
+            col1 += 1
+        col1 = a
+        col1 -= 1
+        while col1 > -1:
+            if prov_kl_m(figure, col1, row1)[0]:
+                vyd.append([col1, row1])
+                if prov_kl_m(figure,col1,row1)[1]=='color':
+                    break
+            else:
+                break
+            col1 -= 1
+        col1 = a
+        row1 += 1
+        while row1<8:
+            if prov_kl_m(figure,col1,row1)[0]:
+                vyd.append([col1, row1])
+                if prov_kl_m(figure,col1,row1)[1]=='color':
+                    break
+            else:
+                break
+            row1 += 1
+        row1 = b
+        row1 -= 1
+        while row1 > -1:
+            if prov_kl_m(figure, col1, row1)[0]:
+                vyd.append([col1, row1])
+                if prov_kl_m(figure,col1,row1)[1]=='color':
+                    break
+            else:
+                break
+            row1 -= 1
+        row1 = b
+    if figure.name == 'bishop':
+        a = col1
+        b = row1
+        col1+=1
+        row1+=1
+        while col1<8 and row1<8:
+            if prov_kl_m(figure,col1,row1)[0]:
+                vyd.append([col1, row1])
+                if prov_kl_m(figure,col1,row1)[1]=='color':
+                    break
+            else:
+                break
+            col1 += 1
+            row1 += 1
+        col1 = a
+        row1 = b
+        col1 -= 1
+        row1-=1
+        while col1 > -1 and row1>-1:
+            if prov_kl_m(figure, col1, row1)[0]:
+                vyd.append([col1, row1])
+                if prov_kl_m(figure,col1,row1)[1]=='color':
+                    break
+            else:
+                break
+            col1 -= 1
+            row1 -= 1
+        col1 = a
+        row1 =b
+        row1 += 1
+        col1-=1
+        while row1<8 and col1>-1:
+            if prov_kl_m(figure,col1,row1)[0]:
+                vyd.append([col1, row1])
+                if prov_kl_m(figure,col1,row1)[1]=='color':
+                    break
+            else:
+                break
+            row1 += 1
+            col1-=1
+        row1 = b
+        col1 = a
+        row1 -= 1
+        col1+=1
+        while row1 > -1 and col1 >-1:
+            if prov_kl_m(figure, col1, row1)[0]:
+                vyd.append([col1, row1])
+                if prov_kl_m(figure,col1,row1)[1]=='color':
+                    break
+            else:
+                break
+            row1 -= 1
+            col1+=1
+        row1 = b
+        col1 = a
+    if figure.name == 'queen':
+        a = col1
+        b = row1
+        col1+=1
+        while col1<8:
+            if prov_kl_m(figure,col1,row1)[0]:
+                vyd.append([col1, row1])
+                if prov_kl_m(figure,col1,row1)[1]=='color':
+                    break
+            else:
+                break
+            col1 += 1
+        col1 = a
+        col1 -= 1
+        while col1 > -1:
+            if prov_kl_m(figure, col1, row1)[0]:
+                vyd.append([col1, row1])
+                if prov_kl_m(figure,col1,row1)[1]=='color':
+                    break
+            else:
+                break
+            col1 -= 1
+        col1 = a
+        row1 += 1
+        while row1<8:
+            if prov_kl_m(figure,col1,row1)[0]:
+                vyd.append([col1, row1])
+                if prov_kl_m(figure,col1,row1)[1]=='color':
+                    break
+            else:
+                break
+            row1 += 1
+        row1 = b
+        row1 -= 1
+        while row1 > -1:
+            if prov_kl_m(figure, col1, row1)[0]:
+                vyd.append([col1, row1])
+                if prov_kl_m(figure,col1,row1)[1]=='color':
+                    break
+            else:
+                break
+            row1 -= 1
+        row1 = b
+        col1+=1
+        row1+=1
+        while col1<8 and row1<8:
+            if prov_kl_m(figure,col1,row1)[0]:
+                vyd.append([col1, row1])
+                if prov_kl_m(figure,col1,row1)[1]=='color':
+                    break
+            else:
+                break
+            col1 += 1
+            row1 += 1
+        col1 = a
+        row1 = b
+        col1 -= 1
+        row1-=1
+        while col1 > -1 and row1>-1:
+            if prov_kl_m(figure, col1, row1)[0]:
+                vyd.append([col1, row1])
+                if prov_kl_m(figure,col1,row1)[1]=='color':
+                    break
+            else:
+                break
+            col1 -= 1
+            row1 -= 1
+        col1 = a
+        row1 =b
+        row1 += 1
+        col1-=1
+        while row1<8 and col1>-1:
+            if prov_kl_m(figure,col1,row1)[0]:
+                vyd.append([col1, row1])
+                if prov_kl_m(figure,col1,row1)[1]=='color':
+                    break
+            else:
+                break
+            row1 += 1
+            col1-=1
+        row1 = b
+        col1 = a
+        row1 -= 1
+        col1+=1
+        while row1 > -1 and col1 >-1:
+            if prov_kl_m(figure, col1, row1)[0]:
+                vyd.append([col1, row1])
+                if prov_kl_m(figure,col1,row1)[1]=='color':
+                    break
+            else:
+                break
+            row1 -= 1
+            col1+=1
+        row1 = b
+        col1 = a
+    if figure.name == 'pawn':
+        a = 0
+        f = False
+        if figure.color == 'white':
+            if row1 == 1:
+                f = True
+            a = 1
+        else:
+            if row1 == 6:
+                f = True
+            a = -1
+        if prov_kl_m(figure, col1, row1+a)[0] and prov_kl_m(figure, col1, row1+a)[1]=='' :
+            vyd.append([col1, row1+a])
+        if prov_kl_m(figure, col1 + a, row1 + a)[0] and prov_kl_m(figure, col1+a, row1 + a)[1] == 'color':
+            vyd.append([col1 + a, row1 + a])
+        if prov_kl_m(figure, col1 - a, row1 + a)[0] and prov_kl_m(figure, col1-a, row1 + a)[1] == 'color':
+            vyd.append([col1 - a, row1 + a])
+        if f and prov_kl_m(figure, col1 , row1 +2*a)[0] and prov_kl_m(figure, col1, row1 + 2*a)[1] == '':
+            vyd.append([col1, row1 + 2*a])
+    if figure.name == 'king':
+        if prov_kl_m(figure, col1, row1+1)[0] :
+            vyd.append([col1, row1+1])
+        if prov_kl_m(figure, col1, row1-1)[0] :
+            vyd.append([col1, row1-1])
+        if prov_kl_m(figure, col1+1, row1+1)[0] :
+            vyd.append([col1+1, row1+1])
+        if prov_kl_m(figure, col1, row1+1)[0] :
+            vyd.append([col1-1, row1+1])
+        if prov_kl_m(figure, col1+1, row1 - 1)[0]:
+            vyd.append([col1+1, row1 - 1])
+        if prov_kl_m(figure, col1-1, row1 - 1)[0]:
+            vyd.append([col1-1, row1 - 1])
+        if prov_kl_m(figure, col1 + 1, row1)[0]:
+            vyd.append([col1 - 1, row1])
+        if prov_kl_m(figure, col1+1, row1)[0]:
+            vyd.append([col1 + 1, row1])
 # main code
 s_b = 80
 step = 10
