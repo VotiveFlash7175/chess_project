@@ -64,7 +64,8 @@ def spawnall(list,dictImages,vyd):
     for piece in list:
         piece.spawn_figure(dictImages)
 
-def vyd_kl(col1,row1,figure):
+def vyd_kl(col1,row1,figure,userecursion):
+    vyd = []
     vyd.append([col1,row1])
     if figure.name == 'knight':
         if col1-1>=0 and row1+2<=7 and prov_kl_m(figure,col1-1,row1+2)[0]:
@@ -289,30 +290,46 @@ def vyd_kl(col1,row1,figure):
             a = -1
         if prov_kl_m(figure, col1, row1+a)[0] and prov_kl_m(figure, col1, row1+a)[1]=='' :
             vyd.append([col1, row1+a])
+        if f and prov_kl_m(figure, col1 , row1 +2*a)[0] and prov_kl_m(figure, col1, row1 + 2*a)[1] == '':
+            vyd.append([col1, row1 + 2*a])
         if prov_kl_m(figure, col1 + a, row1 + a)[0] and prov_kl_m(figure, col1+a, row1 + a)[1] == 'color':
             vyd.append([col1 + a, row1 + a])
         if prov_kl_m(figure, col1 - a, row1 + a)[0] and prov_kl_m(figure, col1-a, row1 + a)[1] == 'color':
             vyd.append([col1 - a, row1 + a])
-        if f and prov_kl_m(figure, col1 , row1 +2*a)[0] and prov_kl_m(figure, col1, row1 + 2*a)[1] == '':
-            vyd.append([col1, row1 + 2*a])
     if figure.name == 'king':
-        if prov_kl_m(figure, col1, row1+1)[0] :
+        if prov_kl_m(figure, col1, row1+1)[0] and not prov_vyd(col1, row1+1,figure.color, userecursion):
             vyd.append([col1, row1+1])
-        if prov_kl_m(figure, col1, row1-1)[0] :
+        if prov_kl_m(figure, col1, row1-1)[0] and not prov_vyd(col1, row1-1,figure.color, userecursion):
             vyd.append([col1, row1-1])
-        if prov_kl_m(figure, col1+1, row1+1)[0] :
+        if prov_kl_m(figure, col1+1, row1+1)[0] and not prov_vyd(col1+1, row1+1,figure.color, userecursion):
             vyd.append([col1+1, row1+1])
-        if prov_kl_m(figure, col1, row1+1)[0] :
+        if prov_kl_m(figure, col1-1, row1+1)[0] and not prov_vyd(col1-1, row1+1,figure.color, userecursion):
             vyd.append([col1-1, row1+1])
-        if prov_kl_m(figure, col1+1, row1 - 1)[0]:
+        if prov_kl_m(figure, col1+1, row1 - 1)[0] and not prov_vyd(col1+1, row1-1,figure.color, userecursion):
             vyd.append([col1+1, row1 - 1])
-        if prov_kl_m(figure, col1-1, row1 - 1)[0]:
+        if prov_kl_m(figure, col1-1, row1 - 1)[0] and not prov_vyd(col1-1, row1-1,figure.color, userecursion):
             vyd.append([col1-1, row1 - 1])
-        if prov_kl_m(figure, col1 + 1, row1)[0]:
+        if prov_kl_m(figure, col1 - 1, row1)[0] and not prov_vyd(col1-1, row1,figure.color, userecursion):
             vyd.append([col1 - 1, row1])
-        if prov_kl_m(figure, col1+1, row1)[0]:
+        if prov_kl_m(figure, col1+1, row1)[0] and not prov_vyd(col1+1, row1,figure.color, userecursion):
             vyd.append([col1 + 1, row1])
-# main code
+    return vyd
+def prov_vyd(x,y,color, userecursion):
+    if x == 3 and y == 2:
+        ddd = 8888
+    if not userecursion:
+        return False
+
+    newking = chesspiece("king", color, x, y);
+    list.append(newking)
+    for piece in list:
+        if piece.color!=color:
+            vyd_loc = vyd_kl(piece.col0, piece.row0, piece, False)
+            if [x, y] in vyd_loc:
+                list.remove(newking)
+                return True
+    list.remove(newking)
+    return False
 s_b = 80
 step = 10
 wids = lens = s_b * 8 + step * 9
@@ -399,11 +416,11 @@ list.append(chesspiece("knight","black",1,7))
 list.append(chesspiece("knight","black",6,7))
 list.append(chesspiece("bishop","black",2,7))
 list.append(chesspiece("bishop","black",5,7))
-list.append(chesspiece("king","black",3,7))
+list.append(chesspiece("king","black",3,3))
 list.append(chesspiece("queen","black",4,7))
-vyd = []
 
-spawnall(list,dictImages,vyd)   
+g_vyd = []
+spawnall(list,dictImages,g_vyd)
 
 while True:
     for ev in event.get():
@@ -416,6 +433,6 @@ while True:
              row1 = y_mouse // (step + s_b)
              figure = prov_kl(col1,row1)
              if figure != None:
-                 vyd_kl(col1,row1,figure)
-                 spawnall(list,dictImages,vyd)             
+                 g_vyd = vyd_kl(col1,row1,figure, True)
+                 spawnall(list,dictImages,g_vyd)
     display.update()
