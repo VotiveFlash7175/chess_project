@@ -297,38 +297,45 @@ def vyd_kl(col1,row1,figure,userecursion):
         if prov_kl_m(figure, col1 - a, row1 + a)[0] and prov_kl_m(figure, col1-a, row1 + a)[1] == 'color':
             vyd.append([col1 - a, row1 + a])
     if figure.name == 'king':
-        if prov_kl_m(figure, col1, row1+1)[0] and not prov_vyd(col1, row1+1,figure.color, userecursion):
+        if prov_kl_m(figure, col1, row1+1)[0] and not prov_vyd_king(col1, row1+1,figure.color, userecursion):
             vyd.append([col1, row1+1])
-        if prov_kl_m(figure, col1, row1-1)[0] and not prov_vyd(col1, row1-1,figure.color, userecursion):
+        if prov_kl_m(figure, col1, row1-1)[0] and not prov_vyd_king(col1, row1-1,figure.color, userecursion):
             vyd.append([col1, row1-1])
-        if prov_kl_m(figure, col1+1, row1+1)[0] and not prov_vyd(col1+1, row1+1,figure.color, userecursion):
+        if prov_kl_m(figure, col1+1, row1+1)[0] and not prov_vyd_king(col1+1, row1+1,figure.color, userecursion):
             vyd.append([col1+1, row1+1])
-        if prov_kl_m(figure, col1-1, row1+1)[0] and not prov_vyd(col1-1, row1+1,figure.color, userecursion):
+        if prov_kl_m(figure, col1-1, row1+1)[0] and not prov_vyd_king(col1-1, row1+1,figure.color, userecursion):
             vyd.append([col1-1, row1+1])
-        if prov_kl_m(figure, col1+1, row1 - 1)[0] and not prov_vyd(col1+1, row1-1,figure.color, userecursion):
+        if prov_kl_m(figure, col1+1, row1 - 1)[0] and not prov_vyd_king(col1+1, row1-1,figure.color, userecursion):
             vyd.append([col1+1, row1 - 1])
-        if prov_kl_m(figure, col1-1, row1 - 1)[0] and not prov_vyd(col1-1, row1-1,figure.color, userecursion):
+        if prov_kl_m(figure, col1-1, row1 - 1)[0] and not prov_vyd_king(col1-1, row1-1,figure.color, userecursion):
             vyd.append([col1-1, row1 - 1])
-        if prov_kl_m(figure, col1 - 1, row1)[0] and not prov_vyd(col1-1, row1,figure.color, userecursion):
+        if prov_kl_m(figure, col1 - 1, row1)[0] and not prov_vyd_king(col1-1, row1,figure.color, userecursion):
             vyd.append([col1 - 1, row1])
-        if prov_kl_m(figure, col1+1, row1)[0] and not prov_vyd(col1+1, row1,figure.color, userecursion):
+        if prov_kl_m(figure, col1+1, row1)[0] and not prov_vyd_king(col1+1, row1,figure.color, userecursion):
             vyd.append([col1 + 1, row1])
     return vyd
-def prov_vyd(x,y,color, userecursion):
-    if x == 3 and y == 2:
-        ddd = 8888
+def prov_vyd_king(x,y,color, userecursion):
     if not userecursion:
         return False
+
+    a = prov_kl(x, y)
+    if a != None:
+        list.remove(a);
 
     newking = chesspiece("king", color, x, y);
     list.append(newking)
     for piece in list:
         if piece.color!=color:
             vyd_loc = vyd_kl(piece.col0, piece.row0, piece, False)
+            del vyd_loc[0]
             if [x, y] in vyd_loc:
                 list.remove(newking)
+                if a != None:
+                    list.append(a);
                 return True
     list.remove(newking)
+    if a != None:
+        list.append(a);
     return False
 s_b = 80
 step = 10
@@ -394,7 +401,7 @@ list.append(chesspiece("pawn","white",5,1))
 list.append(chesspiece("pawn","white",6,1))
 list.append(chesspiece("pawn","white",7,1))
 list.append(chesspiece("rook","white",0,0))
-list.append(chesspiece("rook","white",7,0))
+list.append(chesspiece("rook","white",2,3))
 list.append(chesspiece("knight","white",1,0))
 list.append(chesspiece("knight","white",6,0))
 list.append(chesspiece("bishop","white",2,0))
