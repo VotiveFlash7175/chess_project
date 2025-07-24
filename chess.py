@@ -297,6 +297,14 @@ def vyd_kl(col1,row1,figure,userecursion):
         if prov_kl_m(figure, col1 - a, row1 + a)[0] and prov_kl_m(figure, col1-a, row1 + a)[1] == 'color':
             vyd.append([col1 - a, row1 + a])
     if figure.name == 'king':
+        if figure.color == 'white':
+            rook1 = wrook1m
+            rook2 = wrook2m
+            king = wkingm
+        else:
+            rook1 = brook1m
+            rook2 = brook2m
+            king = bkingm
         if prov_kl_m(figure, col1, row1+1)[0] and not prov_vyd_king(col1, row1+1,figure.color, userecursion):
             vyd.append([col1, row1+1])
         if prov_kl_m(figure, col1, row1-1)[0] and not prov_vyd_king(col1, row1-1,figure.color, userecursion):
@@ -311,8 +319,12 @@ def vyd_kl(col1,row1,figure,userecursion):
             vyd.append([col1-1, row1 - 1])
         if prov_kl_m(figure, col1 - 1, row1)[0] and not prov_vyd_king(col1-1, row1,figure.color, userecursion):
             vyd.append([col1 - 1, row1])
+            if not rook1 and not king and prov_kl_m(figure, col1 - 2, row1)[0] and not prov_vyd_king(col1-2, row1,figure.color, userecursion):
+                vyd.append([col1 - 2, row1])
         if prov_kl_m(figure, col1+1, row1)[0] and not prov_vyd_king(col1+1, row1,figure.color, userecursion):
             vyd.append([col1 + 1, row1])
+            if not rook2 and not king and prov_kl_m(figure, col1 + 2, row1)[0] and not prov_vyd_king(col1+2, row1,figure.color, userecursion):
+                vyd.append([col1 + 2, row1])
     return vyd
 def prov_vyd_king(x,y,color, userecursion):
     if not userecursion:
@@ -337,6 +349,7 @@ def prov_vyd_king(x,y,color, userecursion):
     if a != None:
         list.append(a);
     return False
+
 s_b = 80
 step = 10
 wids = lens = s_b * 8 + step * 9
@@ -401,10 +414,10 @@ list.append(chesspiece("pawn","white",5,1))
 list.append(chesspiece("pawn","white",6,1))
 list.append(chesspiece("pawn","white",7,1))
 list.append(chesspiece("rook","white",0,0))
-list.append(chesspiece("rook","white",2,3))
-list.append(chesspiece("knight","white",1,0))
-list.append(chesspiece("knight","white",6,0))
-list.append(chesspiece("bishop","white",2,0))
+list.append(chesspiece("rook","white",4,5))
+list.append(chesspiece("knight","white",0,2))
+list.append(chesspiece("knight","white",2,2))
+list.append(chesspiece("bishop","white",1,3))
 list.append(chesspiece("bishop","white",5,0))
 list.append(chesspiece("king","white",3,0))
 list.append(chesspiece("queen","white",4,0))
@@ -413,19 +426,24 @@ list.append(chesspiece("pawn","black",0,6))
 list.append(chesspiece("pawn","black",1,6))
 list.append(chesspiece("pawn","black",2,6))
 list.append(chesspiece("pawn","black",3,6))
-list.append(chesspiece("pawn","black",4,6))
+list.append(chesspiece("pawn","black",7,3))
 list.append(chesspiece("pawn","black",5,6))
 list.append(chesspiece("pawn","black",6,6))
 list.append(chesspiece("pawn","black",7,6))
 list.append(chesspiece("rook","black",0,7))
 list.append(chesspiece("rook","black",7,7))
-list.append(chesspiece("knight","black",1,7))
-list.append(chesspiece("knight","black",6,7))
+list.append(chesspiece("knight","black",3,2))
+list.append(chesspiece("knight","black",2,3))
 list.append(chesspiece("bishop","black",2,7))
-list.append(chesspiece("bishop","black",5,7))
-list.append(chesspiece("king","black",3,3))
-list.append(chesspiece("queen","black",4,7))
-
+list.append(chesspiece("bishop","black",4,4))
+list.append(chesspiece("king","black",3,7))
+list.append(chesspiece("queen","black",3,3))
+wrook1m = False
+wrook2m = False
+wkingm = False
+brook1m = False
+brook2m = False
+bkingm = False
 g_vyd = []
 spawnall(list,dictImages,g_vyd)
 
