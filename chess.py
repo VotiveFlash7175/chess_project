@@ -1,3 +1,4 @@
+import pygame
 from pygame import *
 
 # classes
@@ -360,6 +361,9 @@ GREEN = (0, 255, 0)
 RED = (255, 0, 0)
 L_BLUE= (173,216,230)
 D_BLUE = (0,0,63)
+
+init()
+
 screen = display.set_mode((wids,lens))
 display.set_caption('Chess')
 screen.fill(BROWN)
@@ -414,10 +418,10 @@ list.append(chesspiece("pawn","white",5,1))
 list.append(chesspiece("pawn","white",6,1))
 list.append(chesspiece("pawn","white",7,1))
 list.append(chesspiece("rook","white",0,0))
-list.append(chesspiece("rook","white",4,5))
-list.append(chesspiece("knight","white",0,2))
-list.append(chesspiece("knight","white",2,2))
-list.append(chesspiece("bishop","white",1,3))
+list.append(chesspiece("rook","white",7,0))
+list.append(chesspiece("knight","white",1,0))
+list.append(chesspiece("knight","white",6,0))
+list.append(chesspiece("bishop","white",2,0))
 list.append(chesspiece("bishop","white",5,0))
 list.append(chesspiece("king","white",3,0))
 list.append(chesspiece("queen","white",4,0))
@@ -426,18 +430,18 @@ list.append(chesspiece("pawn","black",0,6))
 list.append(chesspiece("pawn","black",1,6))
 list.append(chesspiece("pawn","black",2,6))
 list.append(chesspiece("pawn","black",3,6))
-list.append(chesspiece("pawn","black",7,3))
+list.append(chesspiece("pawn","black",4,6))
 list.append(chesspiece("pawn","black",5,6))
 list.append(chesspiece("pawn","black",6,6))
 list.append(chesspiece("pawn","black",7,6))
 list.append(chesspiece("rook","black",0,7))
 list.append(chesspiece("rook","black",7,7))
-list.append(chesspiece("knight","black",3,2))
-list.append(chesspiece("knight","black",2,3))
+list.append(chesspiece("knight","black",1,7))
+list.append(chesspiece("knight","black",6,7))
 list.append(chesspiece("bishop","black",2,7))
-list.append(chesspiece("bishop","black",4,4))
+list.append(chesspiece("bishop","black",5,7))
 list.append(chesspiece("king","black",3,7))
-list.append(chesspiece("queen","black",3,3))
+list.append(chesspiece("queen","black",4,7))
 wrook1m = False
 wrook2m = False
 wkingm = False
@@ -447,12 +451,14 @@ bkingm = False
 g_vyd = []
 spawnall(list,dictImages,g_vyd)
 
-while True:
+running = True
+
+while running:
     for ev in event.get():
         if ev.type == QUIT:
             quit()
+            running = False
         elif ev.type == MOUSEBUTTONDOWN:
-             vyd = []
              x_mouse, y_mouse = mouse.get_pos()
              col1 = x_mouse // (step + s_b)
              row1 = y_mouse // (step + s_b)
@@ -460,4 +466,5 @@ while True:
              if figure != None:
                  g_vyd = vyd_kl(col1,row1,figure, True)
                  spawnall(list,dictImages,g_vyd)
-    display.update()
+    if running:
+        display.update()
