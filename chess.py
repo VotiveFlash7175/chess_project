@@ -35,8 +35,8 @@ def prov_kl_m(piece1,x,y):
 def prov_kl(x,y):
     for piece in list:
         if piece.col0==x and piece.row0==y:
-            return piece
-    return None
+            return piece,x,y
+    return None,x,y
 def spawnall(list,dictImages,vyd):
     q = 0
     for col in range(8):
@@ -320,11 +320,11 @@ def vyd_kl(col1,row1,figure,userecursion):
             vyd.append([col1-1, row1 - 1])
         if prov_kl_m(figure, col1 - 1, row1)[0] and not prov_vyd_king(col1-1, row1,figure.color, userecursion):
             vyd.append([col1 - 1, row1])
-            if not rook1 and not king and prov_kl_m(figure, col1 - 2, row1)[0] and not prov_vyd_king(col1-2, row1,figure.color, userecursion):
+            if not rook1 and not king and prov_kl_m(figure, col1 - 2, row1)[0] and not prov_vyd_king(col1-2, row1,figure.color, userecursion) and not prov_vyd_king(col1, row1,figure.color, userecursion):
                 vyd.append([col1 - 2, row1])
         if prov_kl_m(figure, col1+1, row1)[0] and not prov_vyd_king(col1+1, row1,figure.color, userecursion):
             vyd.append([col1 + 1, row1])
-            if not rook2 and not king and prov_kl_m(figure, col1 + 2, row1)[0] and not prov_vyd_king(col1+2, row1,figure.color, userecursion):
+            if not rook2 and not king and prov_kl_m(figure, col1 + 2, row1)[0] and not prov_vyd_king(col1+2, row1,figure.color, userecursion) and not prov_vyd_king(col1, row1,figure.color, userecursion):
                 vyd.append([col1 + 2, row1])
     return vyd
 def prov_vyd_king(x,y,color, userecursion):
@@ -392,7 +392,7 @@ pawn = transform.scale(pawn, (80, 80))
 bpawn = image.load('bpawn.png').convert_alpha()
 bpawn = transform.scale(bpawn, (80, 80))
 dictImages = {}
-
+figure = chesspiece("pawn","white",0,1)
 dictImages['king'] = king
 dictImages['bking'] = bking
 dictImages['queen'] = queen
@@ -419,7 +419,7 @@ list.append(chesspiece("pawn","white",6,1))
 list.append(chesspiece("pawn","white",7,1))
 list.append(chesspiece("rook","white",0,0))
 list.append(chesspiece("rook","white",7,0))
-list.append(chesspiece("knight","white",1,0))
+list.append(chesspiece("knight","white",6,5))
 list.append(chesspiece("knight","white",6,0))
 list.append(chesspiece("bishop","white",2,0))
 list.append(chesspiece("bishop","white",5,0))
@@ -459,10 +459,25 @@ while running:
             quit()
             running = False
         elif ev.type == MOUSEBUTTONDOWN:
+             coll = 0
+             rowl = 0
+             last = g_vyd
+             lastf = figure
              x_mouse, y_mouse = mouse.get_pos()
              col1 = x_mouse // (step + s_b)
              row1 = y_mouse // (step + s_b)
-             figure = prov_kl(col1,row1)
+             figure = prov_kl(col1,row1)[0]
+             x = prov_kl(col1,row1)[1]
+             y = prov_kl(col1, row1)[2]
+             if figure != None:
+                coll = figure.col0
+                rowl = figure.row0
+             else:
+                coll = x
+                rowl = y
+             if [coll, rowl] in last and lastf!=None:
+                lastf.col0=coll
+                lastf.row0=rowl
              if figure != None:
                  g_vyd = vyd_kl(col1,row1,figure, True)
                  spawnall(list,dictImages,g_vyd)
