@@ -331,7 +331,7 @@ def prov_vyd_king(x,y,color, userecursion):
     if not userecursion:
         return False
 
-    a = prov_kl(x, y)
+    a = prov_kl(x, y)[0]
     if a != None and a in list:
         list.remove(a)
 
@@ -419,7 +419,7 @@ list.append(chesspiece("pawn","white",6,1))
 list.append(chesspiece("pawn","white",7,1))
 list.append(chesspiece("rook","white",0,0))
 list.append(chesspiece("rook","white",7,0))
-list.append(chesspiece("knight","white",6,5))
+list.append(chesspiece("knight","white",1,0))
 list.append(chesspiece("knight","white",6,0))
 list.append(chesspiece("bishop","white",2,0))
 list.append(chesspiece("bishop","white",5,0))
@@ -464,7 +464,7 @@ while running:
              last = g_vyd
              lastf = figure
              x_mouse, y_mouse = mouse.get_pos()
-             col1 = x_mouse // (step + s_b)
+             col1 = x_mouse // (step+ s_b)
              row1 = y_mouse // (step + s_b)
              figure = prov_kl(col1,row1)[0]
              x = prov_kl(col1,row1)[1]
@@ -478,7 +478,7 @@ while running:
              if [coll, rowl] in last and lastf!=None:
                 lastf.col0=coll
                 lastf.row0=rowl
-             if figure != None:
+             if figure!= None:
                  g_vyd = vyd_kl(col1,row1,figure, True)
                  spawnall(list,dictImages,g_vyd)
     if running:
