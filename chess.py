@@ -460,6 +460,10 @@ maincl = True
 spawnall(list,dictImages,g_vyd)
 #save_lastf = chesspiece("pawn","white",0,1)
 #save_figure = chesspiece("pawn","black",0,6)
+wr1 = list[8]
+wr2 = list[9]
+br1 = list[24]
+br2 = list[25]
 a=1
 running = True
 
@@ -501,14 +505,18 @@ while running:
                         rok = 'long'
                 if rok == 'short':
                     if lastf.color =='white':
-                        list[8].col0=coll+1
+                        wr1.col0=coll+1
+                        rok = ''
                     else:
-                        list[23].col0 = coll+1
+                        br1.col0 = coll+1
+                        rok = ''
                 elif rok == 'long':
                     if lastf.color =='white':
-                        list[9].col0=coll-1
+                        wr2.col0=coll-1
+                        rok = ''
                     else:
-                        list[24].col0 = coll-1
+                        br2.col0 = coll-1
+                        rok = ''
 
 
                 lastf.col0 = coll
