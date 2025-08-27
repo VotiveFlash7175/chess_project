@@ -489,7 +489,6 @@ while running:
              else:
                 coll = x
                 rowl = y
-             print(coll,rowl)
              if last!= None and [coll, rowl] in last[1:] and lastf!=None:
                 if figure in list:
                     if figure != lastf:
@@ -540,7 +539,6 @@ while running:
                          col_move='black'
                      else:
                          col_move='white'
-                     print(col_move)
                      move = False
                  else:
                      move = False
