@@ -292,8 +292,8 @@ def vyd_kl(col1,row1,figure,userecursion):
                 a = -1
             if prov_kl_m(figure, col1, row1+a)[0] and prov_kl_m(figure, col1, row1+a)[1]=='' :
                 vyd.append([col1, row1+a])
-            if f and prov_kl_m(figure, col1 , row1 +2*a)[0] and prov_kl_m(figure, col1, row1 + 2*a)[1] == '':
-                vyd.append([col1, row1 + 2*a])
+                if f and prov_kl_m(figure, col1 , row1 +2*a)[0] and prov_kl_m(figure, col1, row1 + 2*a)[1] == '':
+                    vyd.append([col1, row1 + 2*a])
             if prov_kl_m(figure, col1 + a, row1 + a)[0] and prov_kl_m(figure, col1+a, row1 + a)[1] == 'color':
                 vyd.append([col1 + a, row1 + a])
             if prov_kl_m(figure, col1 - a, row1 + a)[0] and prov_kl_m(figure, col1-a, row1 + a)[1] == 'color':
@@ -332,7 +332,7 @@ def prov_vyd_king(x,y,color, userecursion):
     if not userecursion:
         return False
 
-    a = prov_kl(x, y)[0]
+    a = prov_kl(x, y,False)[0]
     if a != None and a in list:
         list.remove(a)
 
@@ -408,7 +408,7 @@ dictImages['bishop'] = bishop
 dictImages['bbishop'] = bbishop
 dictImages['knight'] = knight
 dictImages['bknight'] = bknight
-count_move = 0
+
 
 
 
@@ -480,7 +480,7 @@ while running:
              row1 = y_mouse // (step + s_b)
              if a == 1:
                  maincl = True
-             else:
+             elif a==0 and [col1, row1] in last[1:]:
                  maincl = False
              figure,x,y = prov_kl(col1,row1,maincl)
              if figure != None:
@@ -489,7 +489,8 @@ while running:
              else:
                 coll = x
                 rowl = y
-             if last!= None and [coll, rowl] in last and lastf!=None:
+             print(coll,rowl)
+             if last!= None and [coll, rowl] in last[1:] and lastf!=None:
                 if figure in list:
                     if figure != lastf:
                         list.remove(figure)
@@ -513,7 +514,6 @@ while running:
 
                 lastf.col0 = coll
                 lastf.row0 = rowl
-                count_move = 1
                 move = True
                 g_vyd = []
                 spawnall(list, dictImages, None)
@@ -540,8 +540,10 @@ while running:
                          col_move='black'
                      else:
                          col_move='white'
+                     print(col_move)
                      move = False
                  else:
+                     move = False
                      a=0
                      g_vyd = vyd_kl(col1, row1, figure, True)
                      spawnall(list, dictImages, g_vyd)
