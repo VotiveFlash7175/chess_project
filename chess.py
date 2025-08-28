@@ -25,6 +25,8 @@ class chesspiece:
 #functions
 def prov_kl_m(piece1,x,y):
     for piece in list:
+        if x>7:
+            return False, ""
         if piece.col0==x and piece.row0==y:
             if piece.color==piece1.color:
                 return False, ""
@@ -367,6 +369,8 @@ D_BLUE = (0,0,63)
 init()
 
 screen = display.set_mode((wids,lens))
+screen2 = display.set_mode((wids*1.25,lens))
+col_move = 'white'
 display.set_caption('Chess')
 screen.fill(BROWN)
 knight = image.load('knight_transparent.png').convert_alpha()
@@ -393,6 +397,15 @@ pawn = image.load('pawn1.png').convert_alpha()
 pawn = transform.scale(pawn, (80, 80))
 bpawn = image.load('bpawn.png').convert_alpha()
 bpawn = transform.scale(bpawn, (80, 80))
+f1 = font.SysFont('comicsans', 55)
+f2 = font.SysFont('comicsans', 45)
+text1 = f1.render('Move:', 1,  (255, 255, 0))
+text2 = f2.render(col_move, 1,  (255, 255, 0))
+
+screen2.blit(text1, (730, 30))
+screen2.blit(text2, (740, 90))
+pygame.display.update()
+
 dictImages = {}
 col_move = 'white'
 figure = chesspiece("pawn","white",0,1)
@@ -408,6 +421,7 @@ dictImages['bishop'] = bishop
 dictImages['bbishop'] = bbishop
 dictImages['knight'] = knight
 dictImages['bknight'] = bknight
+
 
 
 
@@ -466,6 +480,8 @@ br1 = list[24]
 br2 = list[25]
 a=1
 running = True
+save = list
+saveV = g_vyd
 
 while running:
     for ev in event.get():
@@ -494,6 +510,8 @@ while running:
                 coll = x
                 rowl = y
              if last!= None and [coll, rowl] in last[1:] and lastf!=None:
+                save = list
+                saveV = g_vyd
                 if figure in list:
                     if figure != lastf:
                         list.remove(figure)
@@ -547,6 +565,11 @@ while running:
                          col_move='black'
                      else:
                          col_move='white'
+                     screen2.blit(f2.render('', 1,  (255, 255, 0)), (740, 90))
+                     text2 = f2.render(col_move, 1, (255, 255, 0))
+                     draw.rect(screen2, BROWN, (740, 100, 200, 60))
+                     screen2.blit(text2, (740, 90))
+                     display.update()
                      move = False
                  else:
                      move = False
