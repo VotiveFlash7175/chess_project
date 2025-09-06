@@ -7,6 +7,7 @@ class chesspiece:
     color = 'white'
     col0 = 0
     row0 = 0
+    row1 = -1
     def __init__(self, name,color,col0,row0):
         self.name = name
         self.color = color
@@ -27,7 +28,7 @@ def prov_kl_m(piece1,x,y):
     for piece in list:
         if x>7:
             return False, ""
-        if piece.col0==x and piece.row0==y:
+        if piece.col0==x and (piece.row0==y or (piece1.name=='pawn' and piece.row1==y)):
             if piece.color==piece1.color:
                 return False, ""
             else:
@@ -36,8 +37,8 @@ def prov_kl_m(piece1,x,y):
 
 def prov_kl(x,y,maincolor):
     for piece in list:
-        if piece.col0==x and piece.row0==y and (not maincolor or piece.color==col_move):
-            return piece,x,y
+            if piece.col0==x and (piece.row0==y or (piece.name=='pawn' and piece.row1==y)) and (not maincolor or piece.color==col_move):
+                return piece,x,y
     return None,x,y
 def spawnall(list,dictImages,vyd):
     q = 0
@@ -66,7 +67,8 @@ def spawnall(list,dictImages,vyd):
             draw.rect(screen, color, (a*(step +s_b)+step, b*(step +s_b)+step, s_b, s_b))
             first = False
     for piece in list:
-        piece.spawn_figure(dictImages)
+        if figure.name!='pawnd':
+            piece.spawn_figure(dictImages)
 
 def vyd_kl(col1,row1,figure,userecursion):
         vyd = []
@@ -284,6 +286,7 @@ def vyd_kl(col1,row1,figure,userecursion):
         if figure.name == 'pawn':
             a = 0
             f = False
+            kl = prov_kl(col1 + a, row1 + a, False)[0]
             if figure.color == 'white':
                 if row1 == 1:
                     f = True
@@ -296,7 +299,7 @@ def vyd_kl(col1,row1,figure,userecursion):
                 vyd.append([col1, row1+a])
                 if f and prov_kl_m(figure, col1 , row1 +2*a)[0] and prov_kl_m(figure, col1, row1 + 2*a)[1] == '':
                     vyd.append([col1, row1 + 2*a])
-            if prov_kl_m(figure, col1 + a, row1 + a)[0] and prov_kl_m(figure, col1+a, row1 + a)[1] == 'color':
+            if prov_kl_m(figure, col1 + a, row1 + a)[0] and prov_kl_m(figure, col1+a, row1 + a)[1] == 'color' :
                 vyd.append([col1 + a, row1 + a])
             if prov_kl_m(figure, col1 - a, row1 + a)[0] and prov_kl_m(figure, col1-a, row1 + a)[1] == 'color':
                 vyd.append([col1 - a, row1 + a])
@@ -404,7 +407,7 @@ text2 = f2.render(col_move, 1,  (255, 255, 0))
 
 screen2.blit(text1, (730, 30))
 screen2.blit(text2, (740, 90))
-pygame.display.update()
+
 
 dictImages = {}
 col_move = 'white'
@@ -503,15 +506,19 @@ while running:
              elif a==0 and [col1, row1] in last[1:]:
                  maincl = False
              figure,x,y = prov_kl(col1,row1,maincl)
-             if figure != None:
-                coll = figure.col0
-                rowl = figure.row0
-             else:
-                coll = x
-                rowl = y
+#             if figure != None:
+#                coll = figure.col0
+#                rowl = figure.row0
+#             else:
+             coll = x
+             rowl = y
              if last!= None and [coll, rowl] in last[1:] and lastf!=None:
                 save = list
                 saveV = g_vyd
+                if lastf.row0 - rowl == 2:
+                    lastf.row1 = rowl+1
+                elif lastf.row0 - rowl == -2:
+                    lastf.row1 = rowl-1
                 if figure in list:
                     if figure != lastf:
                         list.remove(figure)
@@ -565,11 +572,13 @@ while running:
                          col_move='black'
                      else:
                          col_move='white'
+                     for piece in list:
+                         if piece.color== col_move:
+                             piece.row1 = -1
                      screen2.blit(f2.render('', 1,  (255, 255, 0)), (740, 90))
                      text2 = f2.render(col_move, 1, (255, 255, 0))
                      draw.rect(screen2, BROWN, (740, 100, 200, 60))
                      screen2.blit(text2, (740, 90))
-                     display.update()
                      move = False
                  else:
                      move = False
