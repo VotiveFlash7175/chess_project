@@ -40,7 +40,12 @@ def prov_kl(x,y,maincolor):
             if piece.col0==x and (piece.row0==y or (piece.name=='pawn' and piece.row1==y)) and (not maincolor or piece.color==col_move):
                 return piece,x,y
     return None,x,y
-def spawnall(list,dictImages,vyd):
+def prov_kl_l2(x,y,maincolor):
+    for piece in list2:
+            if piece.col0==x and (piece.row0==y or (piece.name=='pawn' and piece.row1==y)) and (not maincolor or piece.color==col_move):
+                return piece,x,y
+    return None,x,y
+def spawnall(list,dictImages,vyd,promoting,list2):
     q = 0
     for col in range(8):
         for row in range(8):
@@ -68,6 +73,11 @@ def spawnall(list,dictImages,vyd):
             first = False
     for piece in list:
         if figure.name!='pawnd':
+            piece.spawn_figure(dictImages)
+    if promoting:
+        draw.rect(screen, 'blue', (130, 246, s_b * 5 + 60, s_b * 2 + 60))
+        draw.rect(screen, 'white', (134, 250, s_b * 5 + 52, s_b * 2 + 52))
+        for piece in list2:
             piece.spawn_figure(dictImages)
 
 def vyd_kl(col1,row1,figure,userecursion):
@@ -404,7 +414,7 @@ f1 = font.SysFont('comicsans', 55)
 f2 = font.SysFont('comicsans', 45)
 text1 = f1.render('Move:', 1,  (255, 255, 0))
 text2 = f2.render(col_move, 1,  (255, 255, 0))
-
+fg1= chesspiece("pawn","white",0,6)
 screen2.blit(text1, (730, 30))
 screen2.blit(text2, (740, 90))
 
@@ -474,7 +484,9 @@ rok = ''
 move = False
 g_vyd = []
 maincl = True
-spawnall(list,dictImages,g_vyd)
+list2 = []
+promoting = False
+spawnall(list,dictImages,g_vyd,promoting,list2)
 #save_lastf = chesspiece("pawn","white",0,1)
 #save_figure = chesspiece("pawn","black",0,6)
 wr1 = list[8]
@@ -492,98 +504,123 @@ while running:
             quit()
             running = False
         elif ev.type == MOUSEBUTTONDOWN:
-             maincl = True
-             coll = 0
-             rowl = 0
-             last = g_vyd
-             lastf = figure
-             #save_lastf = lastf
-             x_mouse, y_mouse = mouse.get_pos()
-             col1 = x_mouse // (step+ s_b)
-             row1 = y_mouse // (step + s_b)
-             if a == 1:
+            if promoting:
+                x_mouse, y_mouse = mouse.get_pos()
+                col1 = x_mouse // (step + s_b)
+                row1 = y_mouse // (step + s_b)
+                figure, x, y = prov_kl_l2(col1, row1, maincl)
+                if figure in list2:
+                    prom = figure
+                    promoting = False
+                    fg1.name=prom.name
+                    list2 = []
+                    draw.rect(screen, BROWN, (130, 246, s_b * 5 + 60, s_b * 2 + 60))
+                    spawnall(list, dictImages, g_vyd, promoting, list2)
+                else:
+                    continue
+            else:
                  maincl = True
-             elif a==0 and [col1, row1] in last[1:]:
-                 maincl = False
-             figure,x,y = prov_kl(col1,row1,maincl)
-#             if figure != None:
-#                coll = figure.col0
-#                rowl = figure.row0
-#             else:
-             coll = x
-             rowl = y
-             if last!= None and [coll, rowl] in last[1:] and lastf!=None:
-                save = list
-                saveV = g_vyd
-                if lastf.row0 - rowl == 2:
-                    lastf.row1 = rowl+1
-                elif lastf.row0 - rowl == -2:
-                    lastf.row1 = rowl-1
-                if figure in list:
-                    if figure != lastf:
-                        list.remove(figure)
-                figure = lastf
-                if lastf.name=='king':
-                    if lastf.col0 - coll == 2:
-                        rok = 'short'
-                    if coll - lastf.col0 == 2:
-                        rok = 'long'
-                if rok == 'short':
-                    if lastf.color =='white':
-                        wr1.col0=coll+1
-                        rok = ''
-                    else:
-                        br1.col0 = coll+1
-                        rok = ''
-                elif rok == 'long':
-                    if lastf.color =='white':
-                        wr2.col0=coll-1
-                        rok = ''
-                    else:
-                        br2.col0 = coll-1
-                        rok = ''
+                 coll = 0
+                 rowl = 0
+                 last = g_vyd
+                 lastf = figure
+                 #save_lastf = lastf
+                 x_mouse, y_mouse = mouse.get_pos()
+                 col1 = x_mouse // (step+ s_b)
+                 row1 = y_mouse // (step + s_b)
+                 if a == 1:
+                     maincl = True
+                 elif a==0 and [col1, row1] in last[1:]:
+                     maincl = False
+                 figure,x,y = prov_kl(col1,row1,maincl)
+    #             if figure != None:
+    #                coll = figure.col0
+    #                rowl = figure.row0
+    #             else:
+                 coll = x
+                 rowl = y
+                 if last!= None and [coll, rowl] in last[1:] and lastf!=None:
+                    save = list
+                    saveV = g_vyd
+                    if lastf.row0 - rowl == 2:
+                        lastf.row1 = rowl+1
+                    elif lastf.row0 - rowl == -2:
+                        lastf.row1 = rowl-1
+                    if figure in list:
+                        if figure != lastf:
+                            list.remove(figure)
+                    figure = lastf
+                    if ((figure.row0==6 and figure.color=='white') or (figure.row0==1 and figure.color=='black')) and figure.name=='pawn':
+                        promoting = True
+                        fg1 = figure
+                    if lastf.name=='king':
+                        if lastf.col0 - coll == 2:
+                            rok = 'short'
+                        if coll - lastf.col0 == 2:
+                            rok = 'long'
+                    if rok == 'short':
+                        if lastf.color =='white':
+                            wr1.col0=coll+1
+                            rok = ''
+                        else:
+                            br1.col0 = coll+1
+                            rok = ''
+                    elif rok == 'long':
+                        if lastf.color =='white':
+                            wr2.col0=coll-1
+                            rok = ''
+                        else:
+                            br2.col0 = coll-1
+                            rok = ''
 
 
-                lastf.col0 = coll
-                lastf.row0 = rowl
-                move = True
-                g_vyd = []
-                spawnall(list, dictImages, None)
-                if lastf.name == 'king':
-                    if lastf.color == 'white':
-                        wkingm = True
-                    else:
-                        bkingm = True
-                if lastf.name == 'rook':
-                    if lastf.color == 'white':
-                        if x == 0 and y==0:
-                            wrook1m=True
+                    lastf.col0 = coll
+                    lastf.row0 = rowl
+                    move = True
+                    g_vyd = []
+                    spawnall(list, dictImages, None,promoting,list2)
+                    if lastf.name == 'king':
+                        if lastf.color == 'white':
+                            wkingm = True
                         else:
-                            wrook2m = True
-                    else:
-                        if x == 0 and y==7:
-                            brook1m=True
+                            bkingm = True
+                    if lastf.name == 'rook':
+                        if lastf.color == 'white':
+                            if x == 0 and y==0:
+                                wrook1m=True
+                            else:
+                                wrook2m = True
                         else:
-                            brook2m = True
-             if figure!= None:
-                 if move:
-                     a=1
-                     if col_move=='white':
-                         col_move='black'
+                            if x == 0 and y==7:
+                                brook1m=True
+                            else:
+                                brook2m = True
+                 if figure!= None:
+                     if move:
+                         a=1
+                         col1 = col_move
+                         if col_move=='white':
+                             col_move='black'
+                         else:
+                             col_move='white'
+                         for piece in list:
+                             if piece.color== col_move:
+                                 piece.row1 = -1
+                         screen2.blit(f2.render('', 1,  (255, 255, 0)), (740, 90))
+                         text2 = f2.render(col_move, 1, (255, 255, 0))
+                         draw.rect(screen2, BROWN, (740, 100, 200, 60))
+                         screen2.blit(text2, (740, 90))
+                         move = False
+                         if promoting:
+                             list2.append(chesspiece("queen", col1, 2, 3))
+                             list2.append(chesspiece("rook", col1, 2, 4))
+                             list2.append(chesspiece("bishop", col1, 5, 3))
+                             list2.append(chesspiece("knight", col1, 5, 4))
+                             spawnall(list, dictImages, g_vyd,promoting,list2)
                      else:
-                         col_move='white'
-                     for piece in list:
-                         if piece.color== col_move:
-                             piece.row1 = -1
-                     screen2.blit(f2.render('', 1,  (255, 255, 0)), (740, 90))
-                     text2 = f2.render(col_move, 1, (255, 255, 0))
-                     draw.rect(screen2, BROWN, (740, 100, 200, 60))
-                     screen2.blit(text2, (740, 90))
-                     move = False
-                 else:
-                     move = False
-                     a=0
-                     g_vyd = vyd_kl(col1, row1, figure, True)
-                     spawnall(list, dictImages, g_vyd)
+                         move = False
+                         a=0
+                         g_vyd = vyd_kl(col1, row1, figure, True)
+                         spawnall(list, dictImages, g_vyd,promoting,list2)
     if running:
         display.update()
