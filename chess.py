@@ -45,6 +45,20 @@ def prov_kl_l2(x,y,maincolor):
             if piece.col0==x and (piece.row0==y or (piece.name=='pawn' and piece.row1==y)) and (not maincolor or piece.color==col_move):
                 return piece,x,y
     return None,x,y
+def check_check(color,userecursion):
+    if not userecursion:
+        return False
+    x,y=0,0
+    for piece1 in list:
+            if piece1.name=='king' and piece1.color==color:
+                x,y = piece1.col0,piece1.row0
+    for piece in list:
+        if piece.color!=color:
+            vyd_loc = vyd_kl(piece.col0, piece.row0, piece, False)
+            if vyd_loc != None:
+                 del vyd_loc[0]
+                 if [x, y] in vyd_loc and len([True for f in list if f.col0==piece.col0 and f.row0==piece.row0])==1:
+                    return True
 def spawnall(list,dictImages,vyd,promoting,list2):
     q = 0
     for col in range(8):
@@ -85,28 +99,64 @@ def vyd_kl(col1,row1,figure,userecursion):
         vyd.append([col1,row1])
         if figure.name == 'knight':
             if col1-1>=0 and row1+2<=7 and prov_kl_m(figure,col1-1,row1+2)[0]:
-                vyd.append([col1-1,row1+2])
+                ka, b = figure.col0, figure.row0
+                figure.col0, figure.row0 = col1 - 1, row1 + 2
+                if not check_check(figure.color, userecursion):
+                    vyd.append([col1 - 1, row1 + 2])
+                figure.col0, figure.row0 = ka, b
             if col1+1<=7 and row1+2<=7 and prov_kl_m(figure,col1+1,row1+2)[0]:
-                vyd.append([col1+1,row1+2])
+                ka, b = figure.col0, figure.row0
+                figure.col0, figure.row0 = col1 + 1, row1 + 2
+                if not check_check(figure.color, userecursion):
+                    vyd.append([col1 + 1, row1 + 2])
+                figure.col0, figure.row0 = ka, b
             if col1-1>=0 and row1-2>=0 and prov_kl_m(figure,col1-1,row1-2)[0]:
-                vyd.append([col1-1,row1-2])
+                ka, b = figure.col0, figure.row0
+                figure.col0, figure.row0 = col1 - 1, row1 - 2
+                if not check_check(figure.color, userecursion):
+                    vyd.append([col1 - 1, row1 -2])
+                figure.col0, figure.row0 = ka, b
             if col1+1<=7 and row1-2>=0 and prov_kl_m(figure,col1+1,row1-2)[0]:
-                vyd.append([col1+1,row1-2])
+                ka, b = figure.col0, figure.row0
+                figure.col0, figure.row0 = col1 + 1, row1 - 2
+                if not check_check(figure.color, userecursion):
+                    vyd.append([col1 +1, row1 -2])
+                figure.col0, figure.row0 = ka, b
             if row1-1>=0 and col1+2<=7 and prov_kl_m(figure,col1+2,row1-1)[0]:
-                vyd.append([col1+2,row1-1])
+                ka, b = figure.col0, figure.row0
+                figure.col0, figure.row0 = col1 + 2, row1 - 1
+                if not check_check(figure.color, userecursion):
+                    vyd.append([col1 + 2, row1 - 1])
+                figure.col0, figure.row0 = ka, b
             if row1+1<=7 and col1+2<=7 and prov_kl_m(figure,col1+2,row1+1)[0]:
-                vyd.append([col1+2,row1+1])
+                ka, b = figure.col0, figure.row0
+                figure.col0, figure.row0 = col1 + 2, row1 + 1
+                if not check_check(figure.color, userecursion):
+                    vyd.append([col1 + 2, row1 + 1])
+                figure.col0, figure.row0 = ka, b
             if row1-1>=0 and col1-2>=0 and prov_kl_m(figure,col1-2,row1-1)[0]:
-                vyd.append([col1-2,row1-1])
+                ka, b = figure.col0, figure.row0
+                figure.col0, figure.row0 = col1 - 2, row1 - 1
+                if not check_check(figure.color, userecursion):
+                    vyd.append([col1 - 2, row1 - 1])
+                figure.col0, figure.row0 = ka, b
             if row1+1<=7 and col1-2>=0 and prov_kl_m(figure,col1-2,row1+1)[0]:
-                vyd.append([col1-2,row1+1])
+                ka, b = figure.col0, figure.row0
+                figure.col0, figure.row0 = col1-2, row1+1
+                if not check_check(figure.color, userecursion):
+                    vyd.append([col1 - 2, row1 + 1])
+                figure.col0, figure.row0 = ka, b
         if figure.name == 'rook':
             a = col1
             b = row1
             col1+=1
             while col1<8:
                 if prov_kl_m(figure,col1,row1)[0]:
-                    vyd.append([col1, row1])
+                    ka, b = figure.col0, figure.row0
+                    figure.col0, figure.row0 = col1, row1
+                    if not check_check(figure.color, userecursion):
+                        vyd.append([col1, row1])
+                    figure.col0, figure.row0 = ka, b
                     if prov_kl_m(figure,col1,row1)[1]=='color':
                         break
                 else:
@@ -116,7 +166,11 @@ def vyd_kl(col1,row1,figure,userecursion):
             col1 -= 1
             while col1 > -1:
                 if prov_kl_m(figure, col1, row1)[0]:
-                    vyd.append([col1, row1])
+                    ka, b = figure.col0, figure.row0
+                    figure.col0, figure.row0 = col1, row1
+                    if not check_check(figure.color, userecursion):
+                        vyd.append([col1, row1])
+                    figure.col0, figure.row0 = ka, b
                     if prov_kl_m(figure,col1,row1)[1]=='color':
                         break
                 else:
@@ -126,7 +180,11 @@ def vyd_kl(col1,row1,figure,userecursion):
             row1 += 1
             while row1<8:
                 if prov_kl_m(figure,col1,row1)[0]:
-                    vyd.append([col1, row1])
+                    ka, b = figure.col0, figure.row0
+                    figure.col0, figure.row0 = col1, row1
+                    if not check_check(figure.color, userecursion):
+                        vyd.append([col1, row1])
+                    figure.col0, figure.row0 = ka, b
                     if prov_kl_m(figure,col1,row1)[1]=='color':
                         break
                 else:
@@ -136,7 +194,11 @@ def vyd_kl(col1,row1,figure,userecursion):
             row1 -= 1
             while row1 > -1:
                 if prov_kl_m(figure, col1, row1)[0]:
-                    vyd.append([col1, row1])
+                    ka, b = figure.col0, figure.row0
+                    figure.col0, figure.row0 = col1, row1
+                    if not check_check(figure.color, userecursion):
+                        vyd.append([col1, row1])
+                    figure.col0, figure.row0 = ka, b
                     if prov_kl_m(figure,col1,row1)[1]=='color':
                         break
                 else:
@@ -150,7 +212,11 @@ def vyd_kl(col1,row1,figure,userecursion):
             row1+=1
             while col1<8 and row1<8:
                 if prov_kl_m(figure,col1,row1)[0]:
-                    vyd.append([col1, row1])
+                    ka, b = figure.col0, figure.row0
+                    figure.col0, figure.row0 = col1, row1
+                    if not check_check(figure.color, userecursion):
+                        vyd.append([col1, row1])
+                    figure.col0, figure.row0 = ka, b
                     if prov_kl_m(figure,col1,row1)[1]=='color':
                         break
                 else:
@@ -163,7 +229,11 @@ def vyd_kl(col1,row1,figure,userecursion):
             row1-=1
             while col1 > -1 and row1>-1:
                 if prov_kl_m(figure, col1, row1)[0]:
-                    vyd.append([col1, row1])
+                    ka, b = figure.col0, figure.row0
+                    figure.col0, figure.row0 = col1, row1
+                    if not check_check(figure.color, userecursion):
+                        vyd.append([col1, row1])
+                    figure.col0, figure.row0 = ka, b
                     if prov_kl_m(figure,col1,row1)[1]=='color':
                         break
                 else:
@@ -176,7 +246,11 @@ def vyd_kl(col1,row1,figure,userecursion):
             col1-=1
             while row1<8 and col1>-1:
                 if prov_kl_m(figure,col1,row1)[0]:
-                    vyd.append([col1, row1])
+                    ka, b = figure.col0, figure.row0
+                    figure.col0, figure.row0 = col1, row1
+                    if not check_check(figure.color, userecursion):
+                        vyd.append([col1, row1])
+                    figure.col0, figure.row0 = ka, b
                     if prov_kl_m(figure,col1,row1)[1]=='color':
                         break
                 else:
@@ -189,7 +263,11 @@ def vyd_kl(col1,row1,figure,userecursion):
             col1+=1
             while row1 > -1 and col1 >-1:
                 if prov_kl_m(figure, col1, row1)[0]:
-                    vyd.append([col1, row1])
+                    ka, b = figure.col0, figure.row0
+                    figure.col0, figure.row0 = col1, row1
+                    if not check_check(figure.color, userecursion):
+                        vyd.append([col1, row1])
+                    figure.col0, figure.row0 = ka, b
                     if prov_kl_m(figure,col1,row1)[1]=='color':
                         break
                 else:
@@ -204,7 +282,11 @@ def vyd_kl(col1,row1,figure,userecursion):
             col1+=1
             while col1<8:
                 if prov_kl_m(figure,col1,row1)[0]:
-                    vyd.append([col1, row1])
+                    ka, b = figure.col0, figure.row0
+                    figure.col0, figure.row0 = col1, row1
+                    if not check_check(figure.color, userecursion):
+                        vyd.append([col1, row1])
+                    figure.col0, figure.row0 = ka, b
                     if prov_kl_m(figure,col1,row1)[1]=='color':
                         break
                 else:
@@ -214,7 +296,11 @@ def vyd_kl(col1,row1,figure,userecursion):
             col1 -= 1
             while col1 > -1:
                 if prov_kl_m(figure, col1, row1)[0]:
-                    vyd.append([col1, row1])
+                    ka, b = figure.col0, figure.row0
+                    figure.col0, figure.row0 = col1, row1
+                    if not check_check(figure.color, userecursion):
+                        vyd.append([col1, row1])
+                    figure.col0, figure.row0 = ka, b
                     if prov_kl_m(figure,col1,row1)[1]=='color':
                         break
                 else:
@@ -224,7 +310,11 @@ def vyd_kl(col1,row1,figure,userecursion):
             row1 += 1
             while row1<8:
                 if prov_kl_m(figure,col1,row1)[0]:
-                    vyd.append([col1, row1])
+                    ka, b = figure.col0, figure.row0
+                    figure.col0, figure.row0 = col1, row1
+                    if not check_check(figure.color, userecursion):
+                        vyd.append([col1, row1])
+                    figure.col0, figure.row0 = ka, b
                     if prov_kl_m(figure,col1,row1)[1]=='color':
                         break
                 else:
@@ -234,7 +324,11 @@ def vyd_kl(col1,row1,figure,userecursion):
             row1 -= 1
             while row1 > -1:
                 if prov_kl_m(figure, col1, row1)[0]:
-                    vyd.append([col1, row1])
+                    ka, b = figure.col0, figure.row0
+                    figure.col0, figure.row0 = col1, row1
+                    if not check_check(figure.color, userecursion):
+                        vyd.append([col1, row1])
+                    figure.col0, figure.row0 = ka, b
                     if prov_kl_m(figure,col1,row1)[1]=='color':
                         break
                 else:
@@ -245,7 +339,11 @@ def vyd_kl(col1,row1,figure,userecursion):
             row1+=1
             while col1<8 and row1<8:
                 if prov_kl_m(figure,col1,row1)[0]:
-                    vyd.append([col1, row1])
+                    ka, b = figure.col0, figure.row0
+                    figure.col0, figure.row0 = col1, row1
+                    if not check_check(figure.color, userecursion):
+                        vyd.append([col1, row1])
+                    figure.col0, figure.row0 = ka, b
                     if prov_kl_m(figure,col1,row1)[1]=='color':
                         break
                 else:
@@ -258,7 +356,11 @@ def vyd_kl(col1,row1,figure,userecursion):
             row1-=1
             while col1 > -1 and row1>-1:
                 if prov_kl_m(figure, col1, row1)[0]:
-                    vyd.append([col1, row1])
+                    ka, b = figure.col0, figure.row0
+                    figure.col0, figure.row0 = col1, row1
+                    if not check_check(figure.color, userecursion):
+                        vyd.append([col1, row1])
+                    figure.col0, figure.row0 = ka, b
                     if prov_kl_m(figure,col1,row1)[1]=='color':
                         break
                 else:
@@ -271,7 +373,11 @@ def vyd_kl(col1,row1,figure,userecursion):
             col1-=1
             while row1<8 and col1>-1:
                 if prov_kl_m(figure,col1,row1)[0]:
-                    vyd.append([col1, row1])
+                    ka, b = figure.col0, figure.row0
+                    figure.col0, figure.row0 = col1, row1
+                    if not check_check(figure.color, userecursion):
+                        vyd.append([col1, row1])
+                    figure.col0, figure.row0 = ka, b
                     if prov_kl_m(figure,col1,row1)[1]=='color':
                         break
                 else:
@@ -284,7 +390,11 @@ def vyd_kl(col1,row1,figure,userecursion):
             col1+=1
             while row1 > -1 and col1 >-1:
                 if prov_kl_m(figure, col1, row1)[0]:
-                    vyd.append([col1, row1])
+                    ka, b = figure.col0, figure.row0
+                    figure.col0, figure.row0 = col1, row1
+                    if not check_check(figure.color, userecursion):
+                        vyd.append([col1, row1])
+                    figure.col0, figure.row0 = ka, b
                     if prov_kl_m(figure,col1,row1)[1]=='color':
                         break
                 else:
@@ -305,14 +415,30 @@ def vyd_kl(col1,row1,figure,userecursion):
                 if row1 == 6:
                     f = True
                 a = -1
-            if prov_kl_m(figure, col1, row1+a)[0] and prov_kl_m(figure, col1, row1+a)[1]=='' :
-                vyd.append([col1, row1+a])
+            if prov_kl_m(figure, col1, row1+a)[0] and prov_kl_m(figure, col1, row1+a)[1]=='':
+                ka,b = figure.col0,figure.row0
+                figure.col0,figure.row0 =  col1, row1+a
+                if not check_check(figure.color,userecursion):
+                    vyd.append([col1, row1+a])
+                figure.col0, figure.row0 =  ka,b
                 if f and prov_kl_m(figure, col1 , row1 +2*a)[0] and prov_kl_m(figure, col1, row1 + 2*a)[1] == '':
-                    vyd.append([col1, row1 + 2*a])
+                    ka, b = figure.col0, figure.row0
+                    figure.col0, figure.row0 = col1, row1 + 2*a
+                    if not check_check(figure.color, userecursion):
+                        vyd.append([col1, row1 + 2*a])
+                    figure.col0, figure.row0 = ka, b
             if prov_kl_m(figure, col1 + a, row1 + a)[0] and prov_kl_m(figure, col1+a, row1 + a)[1] == 'color' :
-                vyd.append([col1 + a, row1 + a])
+                ka, b = figure.col0, figure.row0
+                figure.col0, figure.row0 = col1+a, row1 + a
+                if not check_check(figure.color, userecursion):
+                    vyd.append([col1+a, row1 + a])
+                figure.col0, figure.row0 = ka, b
             if prov_kl_m(figure, col1 - a, row1 + a)[0] and prov_kl_m(figure, col1-a, row1 + a)[1] == 'color':
-                vyd.append([col1 - a, row1 + a])
+                ka, b = figure.col0, figure.row0
+                figure.col0, figure.row0 = col1-a, row1 + a
+                if not check_check(figure.color, userecursion):
+                    vyd.append([col1-a, row1 + a])
+                figure.col0, figure.row0 = ka, b
         if figure.name == 'king':
             if figure.color == 'white':
                 rook1 = wrook1m
