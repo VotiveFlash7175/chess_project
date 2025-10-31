@@ -474,24 +474,39 @@ def prov_vyd_king(x,y,color, userecursion):
         return False
 
     a = prov_kl(x, y,False)[0]
+    #print(a)
     if a != None and a in list:
         list.remove(a)
-
-    newking = chesspiece("king", color, x, y)
-    list.append(newking)
+    x1, y1 = 0, 0
+    for piece1 in list:
+        if piece1.name == 'king' and piece1.color == color:
+            x1, y1 = piece1.col0, piece1.row0
+    k1 = prov_kl(x1, y1, False)[0]
+    if k1 != None and k1 in list:
+        list.remove(k1)
+    k_dop = True
+    a_dop = True
+    #newking = chesspiece("king", color, x, y)
+    #list.append(newking)
     for piece in list:
         if piece.color!=color:
             vyd_loc = vyd_kl(piece.col0, piece.row0, piece, False)
             if vyd_loc != None:
                  del vyd_loc[0]
                  if [x, y] in vyd_loc:
-                    list.remove(newking)
+                    #list.remove(newking)
                     if a != None:
                         list.append(a)
+                        a_dop = False
+                    if k1 != None:
+                        list.append(k1)
+                        k_dop = False
                     return True
-    list.remove(newking)
-    if a != None:
+    #list.remove(newking)
+    if a != None and a_dop:
         list.append(a)
+    if k1 != None and k_dop:
+        list.append(k1)
     return False
 
 s_b = 80
