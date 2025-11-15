@@ -618,14 +618,14 @@ dictmodes['bishop'] = p_v_ec
 dictmodes['queen'] = p_v_hc
 
 dictletters = {}
-dictletters['a'] = 0
-dictletters['b'] = 1
-dictletters['c'] = 2
-dictletters['d'] = 3
-dictletters['e'] = 4
-dictletters['f'] = 5
-dictletters['g'] = 6
-dictletters['h'] = 7
+dictletters['a'] = 7
+dictletters['b'] = 6
+dictletters['c'] = 5
+dictletters['d'] = 4
+dictletters['e'] = 3
+dictletters['f'] = 2
+dictletters['g'] = 1
+dictletters['h'] = 0
 
 
 
@@ -712,7 +712,14 @@ while running:
     if do_handle_mouse_down:
         if s_m:
             move1 = stockfish.get_best_move()
+            print('best',move1)
+            if move1 == 'e8g8' or move1 == "e1g1":
+                rok = 'short'
+            elif move1 == 'e8c8' or move1 == "e1c1":
+                rok = 'long'
             lastf, figure, xf, yf = st_move(move1, dictletters)
+            if lastf == None:
+                print('warning')
         if s_m:
             lfl = lastf
             fl = figure
@@ -783,7 +790,7 @@ while running:
                 figure = fl
             if (last != None and [coll, rowl] in last[1:] and lastf != None) or s_m:
                 if not s_m:
-                    move1 = chr(97 + lastf.col0) + str(lastf.row0 + 1) + chr(97 + x) + str(y + 1)
+                    move1 = chr(97 + 7-lastf.col0) + str(lastf.row0 + 1) + chr(97 +7- x) + str(y + 1)
                 stockfish.make_moves_from_current_position([move1])
                 save = list
                 saveV = g_vyd
