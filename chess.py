@@ -39,6 +39,29 @@ def prov_kl_m(piece1,x,y):
             else:
                 return True, "color"
     return True, ""
+def score(listW):
+    count_white =0
+    count_black = 0
+    for piece in listW:
+        if piece.color=='white':
+            if piece.name == 'pawn':
+                count_white+=1
+            elif piece.name == 'bishop' or piece.name== 'knight':
+                count_white+=3
+            elif piece.name == 'rook':
+                count_white+=5
+            if piece.name == 'queen':
+                count_white+=9
+        else:
+            if piece.name == 'pawn':
+                count_black+=1
+            elif piece.name == 'bishop' or piece.name== 'knight':
+                count_black+=3
+            elif piece.name == 'rook':
+                count_black+=5
+            if piece.name == 'queen':
+                count_black+=9
+    print(count_white-count_black)
 
 def prov_kl(x,y,maincolor):
     for piece in list:
@@ -721,6 +744,7 @@ while running:
             if lastf == None:
                 print('warning')
         if s_m:
+            score(list)
             lfl = lastf
             fl = figure
         if promoting:
