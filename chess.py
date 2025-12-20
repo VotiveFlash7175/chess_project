@@ -1,6 +1,7 @@
 import pygame
 from pygame import *
 from random import *
+from chessbot import *
 from stockfish import Stockfish
 dir = r".\stockfish\stockfish-windows-x86-64-avx2.exe"
 stockfish = Stockfish(path = dir)
@@ -96,6 +97,7 @@ def check_check(color,userecursion):
                  del vyd_loc[0]
                  if [x, y] in vyd_loc and len([True for f in list if f.col0==piece.col0 and f.row0==piece.row0])==1:
                     return True
+
 def menu():
     screen.fill(D_BLUE)
     text1 = f1.render('Chess', 1, (0, 255, 0))
@@ -716,7 +718,9 @@ br1 = list[24]
 br2 = list[25]
 a=1
 s_mode = False
+b_mode = False
 s_m = False
+b_m = False
 running = True
 save = list
 saveV = g_vyd
@@ -730,20 +734,35 @@ while running:
             running = False
         elif ev.type == MOUSEBUTTONDOWN:
             do_handle_mouse_down = True
-    if s_m and s_mode:
+    if s_m and s_mode or b_m and b_mode:
         do_handle_mouse_down = True
     if do_handle_mouse_down:
         if s_m:
             move1 = stockfish.get_best_move()
-            print('best',move1)
+            #print('best',move1)
             if move1 == 'e8g8' or move1 == "e1g1":
                 rok = 'short'
             elif move1 == 'e8c8' or move1 == "e1c1":
                 rok = 'long'
             lastf, figure, xf, yf = st_move(move1, dictletters)
-            if lastf == None:
-                print('warning')
-        if s_m:
+            #if lastf == None:
+               # print('warning')
+        #if s_m:
+            #score(list)
+            #lfl = lastf
+            #fl = figure
+        if b_m:
+            move2 = get_best_move()
+            print(move2)
+            # print('best',move1)
+            if move2 == 'e8g8' or move2 == "e1g1":
+                rok = 'short'
+            elif move2 == 'e8c8' or move2 == "e1c1":
+                rok = 'long'
+            lastf, figure, xf, yf = st_move(move2, dictletters)
+            # if lastf == None:
+            # print('warning')
+        if b_m or s_m:
             score(list)
             lfl = lastf
             fl = figure
@@ -777,6 +796,14 @@ while running:
                     s_m = True
                 else:
                     s_m = False
+            elif figure.name == "bishop":
+                b_mode = True
+                main_menu = False
+                screen.fill(BROWN)
+                if randint(0, 1) == 0:
+                    b_m = True
+                else:
+                    b_m = False
             else:
                 continue
             text1 = f1.render('Move:', 1, (255, 255, 0))
@@ -792,7 +819,7 @@ while running:
             lastf = figure
             # save_lastf = lastf
             x_mouse, y_mouse = mouse.get_pos()
-            if not s_m:
+            if not s_m and not b_m:
                 col1 = x_mouse // (step + s_b)
                 row1 = y_mouse // (step + s_b)
             else:
@@ -809,13 +836,18 @@ while running:
             #             else:
             coll = x
             rowl = y
-            if s_m:
+            if s_m or b_m:
                 lastf = lfl
                 figure = fl
-            if (last != None and [coll, rowl] in last[1:] and lastf != None) or s_m:
-                if not s_m:
+            if (last != None and [coll, rowl] in last[1:] and lastf != None) or s_m or b_m:
+                if not s_m and s_mode:
                     move1 = chr(97 + 7-lastf.col0) + str(lastf.row0 + 1) + chr(97 +7- x) + str(y + 1)
-                stockfish.make_moves_from_current_position([move1])
+                elif not b_m and b_mode:
+                    move2 = chr(97 + 7 - lastf.col0) + str(lastf.row0 + 1) + chr(97 + 7 - x) + str(y + 1)
+                if s_mode:
+                    stockfish.make_moves_from_current_position([move1])
+                elif b_mode:
+                    make_moves_from_current_position(move2)
                 save = list
                 saveV = g_vyd
                 if lastf.row0 - rowl == 2:
@@ -875,6 +907,10 @@ while running:
                     s_m = True
                 elif s_mode:
                     s_m = False
+                elif b_mode and b_m:
+                    b_m = False
+                elif b_mode:
+                    b_m = True
             if figure != None:
                 if move:
                     a = 1
