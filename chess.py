@@ -1,12 +1,12 @@
 import pygame
 from pygame import *
 from random import *
-from chessbot import *
+from copy import *
 from stockfish import Stockfish
 dir = r".\stockfish\stockfish-windows-x86-64-avx2.exe"
 stockfish = Stockfish(path = dir)
 stockfish.set_position([])
-
+best_move_ever = ''
 # classes
 class chesspiece:
     name = 'king'
@@ -29,7 +29,34 @@ class chesspiece:
         screen.blit(dict[figure], (x*(step+s_b)+step, (step+s_b)*y+step))
     #def possible_moves(self,list):
 
+class child_position:
+    positionlist = []
+    move = ''
+    def __init__(self, positionlist, move):
+        self.positionlist = positionlist
+        self.move = move
+
 #functions
+def new_pos(listr,col_move):
+    newpos = []
+    for piece in listr:
+        if piece.color==col_move and piece.name=='pawn':
+            vyd = vyd_kl(piece.col0, piece.row0, piece, True)
+            del vyd[0]
+            for move in vyd:
+                copy4 = list.copy()
+                for f in copy4:
+                    if f.col0 == move[0] and f.row0 == move[1]:
+                        del copy4[copy4.index(f)]
+                        break
+                p_index=copy4.index(piece)
+                newpiece = copy(copy4[p_index])
+                copy4[p_index] = newpiece
+                fig_move = chr(97 + 7 - newpiece.col0) + str(newpiece.row0 + 1) + chr(97 + 7 - move[0]) + str(move[1] + 1)
+                copy4[p_index].col0,copy4[p_index].row0=move[0],move[1]
+                copy1 = child_position(copy4,fig_move)
+                newpos.append(copy1)
+    return newpos
 def prov_kl_m(piece1,x,y):
     for piece in list:
         if x>7 or y>7 or x<0 or y<0:
@@ -62,7 +89,7 @@ def score(listW):
                 count_black+=5
             if piece.name == 'queen':
                 count_black+=9
-    print(count_white-count_black)
+    return(count_white-count_black)
 
 def prov_kl(x,y,maincolor):
     for piece in list:
@@ -97,6 +124,54 @@ def check_check(color,userecursion):
                  del vyd_loc[0]
                  if [x, y] in vyd_loc and len([True for f in list if f.col0==piece.col0 and f.row0==piece.row0])==1:
                     return True
+
+def get_best_move(col_move):
+    if col_move == 'white':
+        col_move = True
+    else:
+        col_move = False
+    minimax(list, 3, -10000, 10000, col_move)
+    print('best move: ', best_move_ever)
+    return best_move_ever
+def make_moves_from_current_position(move):
+    print("make_moves_from_current_position")
+
+
+
+def minimax(positionList, depth, alpha, beta, maximizingPlayer):
+    global  best_move_ever
+    if depth == 0:
+        return score(positionList)
+    if maximizingPlayer:
+        maxEval = -10000
+        child_list = new_pos(positionList,'white')
+        for child in child_list:
+            if child.move == 'e4f5':
+                fffff = 'ffff'
+            Eval = minimax(child.positionlist,depth-1,alpha,beta,False)
+            print('debug ', str(maximizingPlayer), child.move, str(Eval))
+            if Eval > maxEval and depth == 3:
+                best_move_ever = child.move
+            maxEval = max(maxEval,Eval)
+            alpha = max(alpha,Eval)
+            if beta<= alpha:
+                break
+        return maxEval
+    else:
+        minEval = 10000
+        child_list = new_pos(positionList,'black')
+        for child in child_list:
+            if child.move == 'f7f5' and depth == 3:
+                ff = 'ff'
+            Eval = minimax(child.positionlist, depth - 1, alpha, beta, True)
+            print('debug ', str(maximizingPlayer), child.move, str(Eval))
+            if Eval < minEval and depth == 3:
+                best_move_ever = child.move
+            minEval = min(minEval, Eval)
+            beta = min(beta, Eval)
+            if beta <= alpha:
+                break
+        return minEval
 
 def menu():
     screen.fill(D_BLUE)
@@ -752,7 +827,7 @@ while running:
             #lfl = lastf
             #fl = figure
         if b_m:
-            move2 = get_best_move()
+            move2 = get_best_move(col_move)
             print(move2)
             # print('best',move1)
             if move2 == 'e8g8' or move2 == "e1g1":
