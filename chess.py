@@ -865,7 +865,7 @@ while running:
             col1 = x_mouse // (step + s_b)
             row1 = y_mouse // (step + s_b)
             figure, x, y = prov_kl_l2(col1, row1, maincl)
-            if figure in list:
+            if figure in list2:
                 prom = figure
                 promoting = False
                 fg1.name = prom.name
