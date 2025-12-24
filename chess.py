@@ -42,7 +42,7 @@ def new_pos(listr,col_move):
     newpos = []
     list = listr
     for piece in listr:
-        if piece.color==col_move and piece.name=='pawn':
+        if piece.color==col_move:
             vyd = vyd_kl(piece.col0, piece.row0, piece, True)
             del vyd[0]
             for move in vyd:
@@ -171,8 +171,6 @@ def minimax(positionList, depth, alpha, beta, maximizingPlayer):
         maxEval = -10000
         child_list = new_pos(positionList,'white')
         for child in child_list:
-            if child.move == 'e4f5':
-                fffff = 'ffff'
             Eval = minimax(child.positionlist,depth-1,alpha,beta,False)
 #            print('debug ', str(maximizingPlayer), child.move, str(Eval))
             if Eval > maxEval and depth == 3:
@@ -186,8 +184,6 @@ def minimax(positionList, depth, alpha, beta, maximizingPlayer):
         minEval = 10000
         child_list = new_pos(positionList,'black')
         for child in child_list:
-            if child.move == 'f7f5' and depth == 3:
-                ff = 'ff'
             Eval = minimax(child.positionlist, depth - 1, alpha, beta, True)
 #            print('debug ', str(maximizingPlayer), child.move, str(Eval))
             if Eval < minEval and depth == 3:
