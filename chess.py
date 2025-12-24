@@ -38,7 +38,9 @@ class child_position:
 
 #functions
 def new_pos(listr,col_move):
+    global list
     newpos = []
+    list = listr
     for piece in listr:
         if piece.color==col_move and piece.name=='pawn':
             vyd = vyd_kl(piece.col0, piece.row0, piece, True)
@@ -73,6 +75,14 @@ def score(listW):
     for piece in listW:
         if piece.color=='white':
             if piece.name == 'pawn':
+                if (piece.col0 == 3 or piece.col0 == 4 ) and piece.row0>=3:
+                    count_white+=0.2
+                elif (piece.col0 == 3 or piece.col0 == 4) and piece.row0==2:
+                    count_white+=0.15
+                elif (piece.col0 == 2 or piece.col0 == 5) and piece.row0>=3:
+                    count_white+=0.1
+                elif (piece.col0 == 2 or piece.col0 == 5) and piece.row0==2:
+                    count_white+=0.05
                 count_white+=1
             elif piece.name == 'bishop' or piece.name== 'knight':
                 count_white+=3
@@ -80,8 +90,18 @@ def score(listW):
                 count_white+=5
             if piece.name == 'queen':
                 count_white+=9
+            #if check_check("black",True) and check_checkmate("black"):
+                #count_white+=1000
         else:
             if piece.name == 'pawn':
+                if (piece.col0 == 3 or piece.col0 == 4) and piece.row0<=4:
+                    count_black+=0.2
+                elif (piece.col0 == 3 or piece.col0 == 4) and piece.row0==5:
+                    count_black+=0.15
+                elif (piece.col0 == 2 or piece.col0 == 5) and piece.row0<=4:
+                    count_black+=0.1
+                elif (piece.col0 == 2 or piece.col0 == 5) and piece.row0==5:
+                    count_black+=0.05
                 count_black+=1
             elif piece.name == 'bishop' or piece.name== 'knight':
                 count_black+=3
@@ -89,6 +109,8 @@ def score(listW):
                 count_black+=5
             if piece.name == 'queen':
                 count_black+=9
+            #if check_check("white",True) and check_checkmate("black"):
+                #count_black+=1000
     return(count_white-count_black)
 
 def prov_kl(x,y,maincolor):
@@ -126,11 +148,14 @@ def check_check(color,userecursion):
                     return True
 
 def get_best_move(col_move):
+    global list
     if col_move == 'white':
         col_move = True
     else:
         col_move = False
+    list_copy = list
     minimax(list, 3, -10000, 10000, col_move)
+    list = list_copy
     print('best move: ', best_move_ever)
     return best_move_ever
 def make_moves_from_current_position(move):
@@ -149,7 +174,7 @@ def minimax(positionList, depth, alpha, beta, maximizingPlayer):
             if child.move == 'e4f5':
                 fffff = 'ffff'
             Eval = minimax(child.positionlist,depth-1,alpha,beta,False)
-            print('debug ', str(maximizingPlayer), child.move, str(Eval))
+#            print('debug ', str(maximizingPlayer), child.move, str(Eval))
             if Eval > maxEval and depth == 3:
                 best_move_ever = child.move
             maxEval = max(maxEval,Eval)
@@ -164,7 +189,7 @@ def minimax(positionList, depth, alpha, beta, maximizingPlayer):
             if child.move == 'f7f5' and depth == 3:
                 ff = 'ff'
             Eval = minimax(child.positionlist, depth - 1, alpha, beta, True)
-            print('debug ', str(maximizingPlayer), child.move, str(Eval))
+#            print('debug ', str(maximizingPlayer), child.move, str(Eval))
             if Eval < minEval and depth == 3:
                 best_move_ever = child.move
             minEval = min(minEval, Eval)
@@ -797,8 +822,6 @@ b_mode = False
 s_m = False
 b_m = False
 running = True
-save = list
-saveV = g_vyd
 mouse_use=True
 #spawnall(list, dictImages, g_vyd, promoting, list2)
 while running:
