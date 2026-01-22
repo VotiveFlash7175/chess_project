@@ -249,7 +249,7 @@ def spawnall(list,dictImages,vyd,promoting,list2):
     for piece in list:
         if figure.name!='pawnd':
             piece.spawn_figure(dictImages)
-    if promoting and (not b_mode or not b_m):
+    if promoting and (not b_mode or not b_m) and (not s_m or not s_mode):
         draw.rect(screen, 'blue', (130, 246, s_b * 5 + 60, s_b * 2 + 60))
         draw.rect(screen, 'white', (134, 250, s_b * 5 + 52, s_b * 2 + 52))
         for piece in list2:
@@ -750,6 +750,11 @@ dictletters['f'] = 2
 dictletters['g'] = 1
 dictletters['h'] = 0
 
+dictnames = {}
+dictnames['q'] = 'queen'
+dictnames['n'] = 'knight'
+dictnames['b'] = 'bishop'
+dictnames['r'] = 'rook'
 
 
 
@@ -835,11 +840,13 @@ while running:
     if do_handle_mouse_down:
         if s_m:
             move1 = stockfish.get_best_move()
-            #print('best',move1)
+            print('best',move1)
             if move1 == 'e8g8' or move1 == "e1g1":
                 rok = 'short'
             elif move1 == 'e8c8' or move1 == "e1c1":
                 rok = 'long'
+            elif len(move1)>4:
+                name = dictnames[move1[-1]]
             lastf, figure, xf, yf = st_move(move1, dictletters)
             #if lastf == None:
                # print('warning')
@@ -863,7 +870,7 @@ while running:
             lfl = lastf
             fl = figure
         if promoting:
-            if not s_mode or s_m:
+            if (not b_mode or b_m) and (not s_mode or s_m):
                 x_mouse, y_mouse = mouse.get_pos()
                 col1 = x_mouse // (step + s_b)
                 row1 = y_mouse // (step + s_b)
@@ -1024,10 +1031,13 @@ while running:
                     draw.rect(screen2, BROWN, (740, 100, 200, 60))
                     screen2.blit(text2, (740, 90))
                     move = False
-                    if b_mode and not b_m:
-                        print(str(b_mode) + '+' + str(b_m))
+                    if b_mode and not b_m and promoting:
                         promoting = False
                         fg1.name = 'queen'
+                        spawnall(list, dictImages, g_vyd, promoting, list2)
+                    if s_mode and not s_m and promoting:
+                        fg1.name = name
+                        promoting = False
                         spawnall(list, dictImages, g_vyd, promoting, list2)
                     if promoting:
                         list2.append(chesspiece("queen", col1, 2, 3))
