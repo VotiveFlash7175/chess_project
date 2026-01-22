@@ -219,6 +219,8 @@ def check_checkmate(color):
         return True
     return False
 def spawnall(list,dictImages,vyd,promoting,list2):
+    global b_m
+    global b_mode
     q = 0
     for col in range(8):
         for row in range(8):
@@ -247,7 +249,7 @@ def spawnall(list,dictImages,vyd,promoting,list2):
     for piece in list:
         if figure.name!='pawnd':
             piece.spawn_figure(dictImages)
-    if promoting:
+    if promoting and (not b_mode or not b_m):
         draw.rect(screen, 'blue', (130, 246, s_b * 5 + 60, s_b * 2 + 60))
         draw.rect(screen, 'white', (134, 250, s_b * 5 + 52, s_b * 2 + 52))
         for piece in list2:
@@ -861,19 +863,20 @@ while running:
             lfl = lastf
             fl = figure
         if promoting:
-            x_mouse, y_mouse = mouse.get_pos()
-            col1 = x_mouse // (step + s_b)
-            row1 = y_mouse // (step + s_b)
-            figure, x, y = prov_kl_l2(col1, row1, maincl)
-            if figure in list2:
-                prom = figure
-                promoting = False
-                fg1.name = prom.name
-                list2 = []
-                draw.rect(screen, BROWN, (130, 246, s_b * 5 + 60, s_b * 2 + 60))
-                spawnall(list, dictImages, g_vyd, promoting, list2)
-            else:
-                continue
+            if not s_mode or s_m:
+                x_mouse, y_mouse = mouse.get_pos()
+                col1 = x_mouse // (step + s_b)
+                row1 = y_mouse // (step + s_b)
+                figure, x, y = prov_kl_l2(col1, row1, maincl)
+                if figure in list2:
+                    prom = figure
+                    promoting = False
+                    fg1.name = prom.name
+                    list2 = []
+                    draw.rect(screen, BROWN, (130, 246, s_b * 5 + 60, s_b * 2 + 60))
+                    spawnall(list, dictImages, g_vyd, promoting, list2)
+                else:
+                    continue
         elif main_menu:
             x_mouse, y_mouse = mouse.get_pos()
             col1 = x_mouse // (step + s_b)
@@ -1021,6 +1024,11 @@ while running:
                     draw.rect(screen2, BROWN, (740, 100, 200, 60))
                     screen2.blit(text2, (740, 90))
                     move = False
+                    if b_mode and not b_m:
+                        print(str(b_mode) + '+' + str(b_m))
+                        promoting = False
+                        fg1.name = 'queen'
+                        spawnall(list, dictImages, g_vyd, promoting, list2)
                     if promoting:
                         list2.append(chesspiece("queen", col1, 2, 3))
                         list2.append(chesspiece("rook", col1, 2, 4))
