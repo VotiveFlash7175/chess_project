@@ -249,7 +249,7 @@ def spawnall(list,dictImages,vyd,promoting,list2):
     for piece in list:
         if figure.name!='pawnd':
             piece.spawn_figure(dictImages)
-    if promoting and (not b_mode or not b_m) and (not s_m or not s_mode):
+    if promoting and ((not b_mode or (b_mode and not b_m)) and (not s_mode or (s_mode and not s_m))):
         draw.rect(screen, 'blue', (130, 246, s_b * 5 + 60, s_b * 2 + 60))
         draw.rect(screen, 'white', (134, 250, s_b * 5 + 52, s_b * 2 + 52))
         for piece in list2:
@@ -870,7 +870,7 @@ while running:
             lfl = lastf
             fl = figure
         if promoting:
-            if (not b_mode or b_m) and (not s_mode or s_m):
+            if (not b_mode and not s_mode) or (b_mode and not b_m) or (s_mode and not s_m):
                 x_mouse, y_mouse = mouse.get_pos()
                 col1 = x_mouse // (step + s_b)
                 row1 = y_mouse // (step + s_b)
@@ -884,12 +884,22 @@ while running:
                     spawnall(list, dictImages, g_vyd, promoting, list2)
                 else:
                     continue
+            if s_mode and not s_m:
+                s_m = True
+            elif s_mode:
+                s_m = False
+            elif b_mode and b_m:
+                b_m = False
+            elif b_mode:
+                b_m = True
         elif main_menu:
             x_mouse, y_mouse = mouse.get_pos()
             col1 = x_mouse // (step + s_b)
             row1 = y_mouse // (step + s_b)
             figure, x, y = prov_kl_l0(col1, row1)
-            if figure.name == "rook":
+            if figure == None:
+                continue
+            elif figure.name == "rook":
                 main_menu = False
                 screen.fill(BROWN)
             elif figure.name == "queen":
@@ -908,8 +918,6 @@ while running:
                     b_m = True
                 else:
                     b_m = False
-            else:
-                continue
             text1 = f1.render('Move:', 1, (255, 255, 0))
             text2 = f2.render(col_move, 1, (255, 255, 0))
             screen2.blit(text1, (730, 30))
@@ -1007,14 +1015,15 @@ while running:
                             brook1m = True
                         else:
                             brook2m = True
-                if s_mode and not s_m:
-                    s_m = True
-                elif s_mode:
-                    s_m = False
-                elif b_mode and b_m:
-                    b_m = False
-                elif b_mode:
-                    b_m = True
+                if not promoting:
+                    if s_mode and not s_m:
+                        s_m = True
+                    elif s_mode:
+                        s_m = False
+                    elif b_mode and b_m:
+                        b_m = False
+                    elif b_mode:
+                        b_m = True
             if figure != None:
                 if move:
                     a = 1
@@ -1031,11 +1040,11 @@ while running:
                     draw.rect(screen2, BROWN, (740, 100, 200, 60))
                     screen2.blit(text2, (740, 90))
                     move = False
-                    if b_mode and not b_m and promoting:
+                    if b_mode and b_m and promoting:
                         promoting = False
                         fg1.name = 'queen'
                         spawnall(list, dictImages, g_vyd, promoting, list2)
-                    if s_mode and not s_m and promoting:
+                    if s_mode and s_m and promoting:
                         fg1.name = name
                         promoting = False
                         spawnall(list, dictImages, g_vyd, promoting, list2)
