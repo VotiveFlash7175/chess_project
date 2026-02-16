@@ -778,22 +778,22 @@ list.append(chesspiece("bishop","white",5,0))
 list.append(chesspiece("king","white",3,0))
 list.append(chesspiece("queen","white",4,0))
 
-list.append(chesspiece("pawn","black",0,6))
-list.append(chesspiece("pawn","black",1,6))
-list.append(chesspiece("pawn","black",2,6))
-list.append(chesspiece("pawn","black",3,6))
-list.append(chesspiece("pawn","black",4,6))
-list.append(chesspiece("pawn","black",5,6))
-list.append(chesspiece("pawn","black",6,6))
-list.append(chesspiece("pawn","black",7,6))
-list.append(chesspiece("rook","black",0,7))
-list.append(chesspiece("rook","black",7,7))
-list.append(chesspiece("knight","black",1,7))
-list.append(chesspiece("knight","black",6,7))
-list.append(chesspiece("bishop","black",2,7))
-list.append(chesspiece("bishop","black",5,7))
+#list.append(chesspiece("pawn","black",0,6))
+#list.append(chesspiece("pawn","black",1,6))
+#list.append(chesspiece("pawn","black",2,6))
+#list.append(chesspiece("pawn","black",3,6))
+#list.append(chesspiece("pawn","black",4,6))
+#list.append(chesspiece("pawn","black",5,6))
+#list.append(chesspiece("pawn","black",6,6))
+#list.append(chesspiece("pawn","black",7,6))
+#list.append(chesspiece("rook","black",0,7))
+#list.append(chesspiece("rook","black",7,7))
+#list.append(chesspiece("knight","black",1,7))
+#list.append(chesspiece("knight","black",6,7))
+#list.append(chesspiece("bishop","black",2,7))
+#list.append(chesspiece("bishop","black",5,7))
 list.append(chesspiece("king","black",3,7))
-list.append(chesspiece("queen","black",4,7))
+#list.append(chesspiece("queen","black",4,7))
 
 list0 = []
 list0.append(chesspiece("rook","black",1,3))
@@ -817,8 +817,8 @@ main_menu = True
 #save_figure = chesspiece("pawn","black",0,6)
 wr1 = list[8]
 wr2 = list[9]
-br1 = list[24]
-br2 = list[25]
+#br1 = list[24]
+#br2 = list[25]
 a=1
 s_mode = False
 b_mode = False
@@ -882,6 +882,17 @@ while running:
                     list2 = []
                     draw.rect(screen, BROWN, (130, 246, s_b * 5 + 60, s_b * 2 + 60))
                     spawnall(list, dictImages, g_vyd, promoting, list2)
+                    if check_checkmate(col_move) and check_check(col_move, True):
+                        if col_move == 'white':
+                            col_move = 'black'
+                        else:
+                            col_move = 'white'
+                        draw.rect(screen2, BROWN, (730, 40, 200, 160))
+                        text3 = f2.render(col_move, 1, (0, 255, 0))
+                        text4 = f1.render('Winner', 1, (0, 255, 0))
+                        screen2.blit(text4, (720, 30))
+                        screen2.blit(text3, (740, 90))
+                        mouse_use = False
                 else:
                     continue
             if s_mode and not s_m:
