@@ -1,10 +1,10 @@
 # chess_project
 Chess Game on Pygame
 
-Настольная игра на Python - шахматы
-Сделано в рамках проекта за 9й класс Фатыховым Петром.
+Desktop chess game on Python.
+This was made under the 9th grade project by Fatykhov Petr.
 
-Реализовано 3 режима игры
-1. Игрок против игрока
-2. Игрок против chess bot Stockfish
-3. Игрок против оригинального бота, написанного с использованием алгоритма minimax с альфа-бета отсечение
+There is 3 chess mode implemented:
+1. Player vs player
+2. Player vs chess bot Stockfish
+3. Player vs original bot, made with minimax with alpha-beta pruning algorithm
